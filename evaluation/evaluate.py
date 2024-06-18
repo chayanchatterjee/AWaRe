@@ -372,7 +372,7 @@ def plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, sig
     else:
         axes[0].legend(loc='lower left', fontsize=16)
 
-    output_dir = 'evaluation/Plots'
+    output_dir = 'Plots'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -403,7 +403,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate the reconstructed GW waveform from AWaRe and plot the reconstruction and the actual injection")
     parser.add_argument("test_filename", type=str, help="Provide the name of the test data file")
     parser.add_argument("test_index", type=int, help="Provide the index of the test sample")
-    parser.add_argument("detector", type=str, help="The detector name ('H1'/'L1/both')", default='L1')
+    parser.add_argument("detector", type=str, help="The detector name ('H1'/'L1'/'both')", default='L1')
     parser.add_argument("add_zoom_plot", type=int, help="Add a zoom plot or not? 0=False, 1=True", default=0)
     args = parser.parse_args()
     
@@ -423,7 +423,7 @@ def main():
     else:
         before, after = 0.8, 0.2
 
-    file_directory = 'evaluation/Test_data/'
+    file_directory = 'Test_data/'
     file_path = os.path.join(file_directory, args.test_filename)
 
     if not os.path.isfile(file_path):
@@ -431,7 +431,7 @@ def main():
         sys.exit(1)
     else:
         strain_data, signal_data, psd_data = read_data(file_path, args.detector, args.test_index)
-        model_path = 'model/Saved_models/Trained_model.h5'
+        model_path = 'model/Trained_model.h5'
 
         if args.detector == 'both':
             mean_reconstruction = {}
