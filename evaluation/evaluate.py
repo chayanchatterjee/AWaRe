@@ -337,9 +337,6 @@ def plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, sig
             elif count == 2:
                 zoom_y = 0.01
 
-            # Define the region of interest for zooming
-            x1, x2 = -0.05, 0.05
-
             low_index = max(max_index - int(before * sample_rate), 0)
             upper_index = min(max_index + int(after * sample_rate), sample_rate)
 
@@ -355,7 +352,7 @@ def plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, sig
             ax_zoom.plot(time_zoom, decoded_signal_zoom, label=f'{det.upper()} AWaRe mean reconstruction', color=palette_flare[1])
             ax_zoom.plot(time_zoom, pure_signal_zoom, label=f'{det.upper()} Injection waveform', color=palette_crest[3])
             ax_zoom.fill_between(time_zoom, lower_90_zoom, upper_90_zoom, color=palette_flare[1], alpha=0.5)
-            ax_zoom.set_xlim(x1, x2)
+            ax_zoom.set_xlim(time_zoom[0], time_zoom[-1])
             ax_zoom.tick_params(axis='y', labelsize=16)
             ax_zoom.tick_params(axis='x', labelsize=16)
             mark_inset(ax, ax_zoom, loc1=2, loc2=4, fc="none", ec="0.5")
