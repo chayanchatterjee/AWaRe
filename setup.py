@@ -1,10 +1,6 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
-setup(
-    name='AWaRe',
-    version='0.1',
-    packages=find_packages(),
-    install_requires=[
+dependencies=[
         'numpy==1.22.2',
         'h5py>=3.10.0',
         'tensorflow==2.8.0',
@@ -16,20 +12,21 @@ setup(
         'matplotlib>=3.6.2', 
         'matplotlib-latex-bridge==0.2.0'
     ],
+
+setup(
+    name='AWaRe',
+    version='0.1',
+    description='Package for AWaRe - a deep learning model for gravitational wave signal reconstruction',
+    url='https://github.com/chayanchatterjee/AWaRe',
+    python_requires='>=3.8',
+    packages=['evaluation', 'evaluation.configs', 'evaluation.model', 'evaluation.Plots', 'evaluation.Saved_results_files', 'evaluation.Test_data', 'evaluation.utils'],
+    package_data={'evaluation':['Test_data/*.hdf']},
+    install_requires=dependencies,
     entry_points={
         'console_scripts': [
-            'aware-evaluate=AWaRe.evaluation.evaluate:main',
-            'aware-main=AWaRe.main:main'
+            'aware-evaluate=evaluation.evaluate:main'
         ],
     },
     author='Chayan Chatterjee',
-    author_email='your_email@domain.com',
-    description='Attention-boosted Waveform Reconstruction network for gravitational waves',
-    url='https://github.com/chayanchatterjee/AWaRe',
-    classifiers=[
-        'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-    ],
-    python_requires='>=3.6',
+    author_email='chayan.chatterjee@vanderbilt.edu',
 )
