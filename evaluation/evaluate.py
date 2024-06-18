@@ -20,7 +20,7 @@ from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 # Add the parent directory to the system path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils.logger import get_logger
+from evaluation.utils.logger import get_logger
 
 tfd = tfp.distributions
 
@@ -372,7 +372,7 @@ def plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, sig
     else:
         axes[0].legend(loc='lower left', fontsize=16)
 
-    output_dir = 'Plots'
+    output_dir = 'evaluation/Plots'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -423,7 +423,7 @@ def main():
     else:
         before, after = 0.8, 0.2
 
-    file_directory = 'Test_data/'
+    file_directory = 'evaluation/Test_data/'
     file_path = os.path.join(file_directory, args.test_filename)
 
     if not os.path.isfile(file_path):
@@ -431,7 +431,7 @@ def main():
         sys.exit(1)
     else:
         strain_data, signal_data, psd_data = read_data(file_path, args.detector, args.test_index)
-        model_path = 'model/Trained_model.h5'
+        model_path = 'evaluation/model/Trained_model.h5'
 
         if args.detector == 'both':
             mean_reconstruction = {}
