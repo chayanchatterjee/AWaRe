@@ -44,8 +44,10 @@ aware-evaluate --test_filename test_data.hdf --test_index 0 --detector both --ad
 ```
 This command will read the input strain data from ```test_data.hdf``` located in the folder ```evaluation/Test_data``` and plot the reconstruction for the data at index ```0``` for ```both``` H1 and L1 detectors. The entry ```1``` at the end means, we want to plot a zoomed-in version of the plots. The program will then prompt you to enter the number of seconds before and after the merger you want to zoom in.
 
-The plot for the reconstruction will then be saved in the directory ```evaluation/Plots```.
+The plot for the reconstruction will then be saved in the directory ```evaluation/Plots```. 
 
 ## Citation
 
-If you use this code please give credit by citing [Swainston et al 2023](link_to_paper)
+If you use this code please give credit by citing the following papers:
+1. [Chatterjee and Jani 2024](https://arxiv.org/abs/2403.01559).
+2. [Chatterjee and Jani 2024](https://arxiv.org/abs/2406.06324).
