@@ -398,10 +398,10 @@ def main():
     preprocess it, evaluate the model, and plot the results.
     """
     parser = argparse.ArgumentParser(description="Generate the reconstructed GW waveform from AWaRe and plot the reconstruction and the actual injection")
-    parser.add_argument("test_filename", type=str, help="Provide the name of the test data file", default='test_data.hdf')
-    parser.add_argument("test_index", type=int, help="Provide the index of the test sample", default=0)
-    parser.add_argument("detector", type=str, help="The detector name ('H1'/'L1'/'both')", default='L1')
-    parser.add_argument("add_zoom_plot", type=int, help="Add a zoom plot or not? 0=False, 1=True", default=0)
+    parser.add_argument("--test_filename", type=str, help="Provide the name of the test data file", default='test_data.hdf')
+    parser.add_argument("--test_index", type=int, help="Provide the index of the test sample", default=0)
+    parser.add_argument("--detector", type=str, help="The detector name ('H1'/'L1'/'both')", default='L1')
+    parser.add_argument("--add_zoom_plot", type=int, help="Add a zoom plot or not? 0=False, 1=True", default=0)
     args = parser.parse_args()
     
     if args.detector not in ['H1', 'L1', 'both']:
