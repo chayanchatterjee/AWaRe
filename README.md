@@ -36,12 +36,15 @@ pip install -e .
 
 ## Usage
 
-To run the code use the following command:
-```
-filter_and_plot
-```
+To run the code and generate reconstruction plots, follow these steps:
 
-This will create a `pulsar_plot.png` file in the current directory.
+1. To generate reconstruction of both H1 and L1 signals together:
+```
+aware-evaluate --test_filename test_data.hdf --test_index 0 --detector both --add_zoom_plot 1
+```
+This command will read the input strain data from ```test_data.hdf``` located in the folder ```evaluation/Test_data``` and plot the reconstruction for the data at index ```0``` for ```both``` H1 and L1 detectors. The entry ```1``` at the end means, we want to plot a zoomed-in version of the plots. The program will then prompt you to enter the number of seconds before and after the merger you want to zoom in.
+
+The plot for the reconstruction will then be saved in the directory ```evaluation/Plots```.
 
 ## Citation
 
