@@ -7,17 +7,31 @@ The architecture of the AWaRe model is shown below: ![below](AWaRe.png):
 
 ## Dependencies
 
-This package requires the following python packages:
+This package requires the following packages:
 - numpy
 - pandas
 - matplotlib
-- argparse
+- tensorflow
+- tensorflow-probability
+- scipy
+- pycbc
 
 ## Installation
 
-To install this package run:
+To install this package, first clone this repository using:
 ```
-pip install .
+git clone https://github.com/chayanchatterjee/AWaRe.git
+```
+Then create a Python virtual environment for AWaRe and activate it:
+```
+python -m venv aware-env
+source aware-env/bin/activate
+```
+Install AWaRe in this virtual environment by running:
+
+```
+cd AWaRe
+pip install -e .
 ```
 
 ## Usage
