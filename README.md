@@ -1,7 +1,9 @@
 # AWaRe - Attention-boosted Waveform Reconstruction network
-This repository contains code for generating rapid reconstructions of binary black hole gravitational wave signals from noisy LIGO detector data using deep learning. Our model, called AWaRe, or Attention-boosted Waveform Reconstruction network, is based on an Encoder-Decoder architecture with a probabilistic output layer that produces accurate waveform reconstructions of gravitational waves, with associated prediction uncertainties in less than a second. The Encoder model, consisting of convolutional layers takes as input a 1 sec long segment of whitened noisy LIGO strain data, and generates a vector of embeddings which is enhanced by a multi-head self-attention module. The Decoder network consisting of a stack of Long Short-Term Memory layers uses the embeddings to produce the whitened gravitational wave reconstruction.  \\
+This repository contains code for generating rapid reconstructions of binary black hole gravitational wave signals from noisy LIGO detector data using deep learning. Our model, called AWaRe, or Attention-boosted Waveform Reconstruction network, is based on an Encoder-Decoder architecture with a probabilistic output layer that produces accurate waveform reconstructions of gravitational waves, with associated prediction uncertainties in less than a second. The Encoder model, consisting of convolutional layers takes as input a 1 sec long segment of whitened noisy LIGO strain data, and generates a vector of embeddings which is enhanced by a multi-head self-attention module. The Decoder network, consisting of a stack of Long Short-Term Memory layers, uses the embeddings to produce the reconstructed whitened waveform.
 
-The figure below
+The architecture of the AWaRe model is shown ![below](AWaRe.png):
+
+
 
 ## Dependencies
 
