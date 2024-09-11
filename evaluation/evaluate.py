@@ -444,10 +444,7 @@ def main():
             else:
                 model_path = 'evaluation/model/Trained_model_glitch_rec_no_unc.h5'
         else:
-            if args.add_uncertainty:
-                model_path = 'evaluation/model/Trained_model.h5'
-            else:
-                model_path = 'evaluation/model/Trained_model_signal_no_unc.h5'
+            model_path = 'evaluation/model/Trained_model.h5'
 
         if args.detector == 'both':
             mean_reconstruction = {}
@@ -463,6 +460,12 @@ def main():
                     plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, signal_data, psd_data, before, after, args.test_index, args.add_zoom_plot, args.detector)                    
 
                 #TODO: Add plotting code for reconstruction without uncertainty or modify existing code.
+                """
+                If signal/pure noise reconstruction without uncertainty, return the mean reconstruction from uncertainty model.
+                If glitch reconstruction without uncertainty, return the prediction using evaluation/model/Trained_model_glitch_rec_no_unc.h5
+
+                """
+                
         else:
             det = args.detector.lower()
             strain = _preprocess_data(strain_data[None, :])
@@ -474,6 +477,11 @@ def main():
                 plot_reconstructed({det: strain_data}, {det: mean_reconstruction}, {det: lower_90}, {det: upper_90}, {det: signal_data}, {det: psd_data}, before, after, args.test_index, args.add_zoom_plot, det)
 
             #TODO: Add plotting code for reconstruction without uncertainty or modify existing code.
+            """
+                If signal/pure noise reconstruction without uncertainty, return the mean reconstruction from uncertainty model.
+                If glitch reconstruction without uncertainty, return the prediction using evaluation/model/Trained_model_glitch_rec_no_unc.h5
+                
+            """
 
 if __name__ == "__main__":
     main()
