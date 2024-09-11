@@ -219,7 +219,8 @@ def evaluate_model(strain, model_path):
 """
 TODO: Write function to predict without uncertainty or modify the previous function
 
-predictions = model.predict(strain)
+model = tf.keras.models.load_model(model_path, custom_objects={'TimeDistributedMultiHeadAttention': TimeDistributedMultiHeadAttention})
+predictions = model.predict(strain)*2000
 
 """
 
