@@ -216,6 +216,13 @@ def evaluate_model(strain, model_path):
     upper = np.array(upper)
     return mean, lower, upper
 
+"""
+TODO: Write function to predict without uncertainty or modify the previous function
+
+predictions = model.predict(strain)
+
+"""
+
 def read_data(file_path, det, index):
     """
     Reads data from an HDF5 file for the specified detector and index.
@@ -401,6 +408,8 @@ def main():
     parser.add_argument("--test_filename", type=str, help="Provide the name of the test data file", default='test_data.hdf')
     parser.add_argument("--test_index", type=int, help="Provide the index of the test sample", default=0)
     parser.add_argument("--detector", type=str, help="The detector name ('H1'/'L1'/'both')", default='L1')
+    parser.add_argument("--glitch_rec", action='store_true', help="Whether testing glitch reconstruction or not")
+    parser.add_argument("--add_uncertainty", action='store_true', help="Whether to generate reconstruction uncertainty or not?")
     parser.add_argument("--add_zoom_plot", type=int, help="Add a zoom plot or not? 0=False, 1=True", default=0)
     args = parser.parse_args()
     
@@ -428,7 +437,17 @@ def main():
         sys.exit(1)
     else:
         strain_data, signal_data, psd_data = read_data(file_path, args.detector, args.test_index)
-        model_path = 'evaluation/model/Trained_model.h5'
+
+        if args.glitch_rec:
+            if args.add_uncertainty:
+                model_path = 'evaluation/model/Trained_model_glitch_rec.h5'
+            else:
+                model_path = 'evaluation/model/Trained_model_glitch_rec_no_unc.h5'
+        else:
+            if args.add_uncertainty:
+                model_path = 'evaluation/model/Trained_model.h5'
+            else:
+                model_path = 'evaluation/model/Trained_model_signal_no_unc.h5'
 
         if args.detector == 'both':
             mean_reconstruction = {}
@@ -438,15 +457,23 @@ def main():
                 strain = _preprocess_data(strain_data[det][None, :])
                 strain = reshape_sequences(strain.shape[0], strain, 10)
                 strain = reshape_and_print(strain)
-                mean_reconstruction[det], lower_90[det], upper_90[det] = evaluate_model(strain, model_path)
-            plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, signal_data, psd_data, before, after, args.test_index, args.add_zoom_plot, args.detector)
+
+                if args.add_uncertainty:
+                    mean_reconstruction[det], lower_90[det], upper_90[det] = evaluate_model(strain, model_path)
+                    plot_reconstructed(strain_data, mean_reconstruction, lower_90, upper_90, signal_data, psd_data, before, after, args.test_index, args.add_zoom_plot, args.detector)                    
+
+                #TODO: Add plotting code for reconstruction without uncertainty or modify existing code.
         else:
             det = args.detector.lower()
             strain = _preprocess_data(strain_data[None, :])
             strain = reshape_sequences(strain.shape[0], strain, 10)
             strain = reshape_and_print(strain)
-            mean_reconstruction, lower_90, upper_90 = evaluate_model(strain, model_path)
-            plot_reconstructed({det: strain_data}, {det: mean_reconstruction}, {det: lower_90}, {det: upper_90}, {det: signal_data}, {det: psd_data}, before, after, args.test_index, args.add_zoom_plot, det)
-    
+
+            if args.add_uncertainty:
+                mean_reconstruction, lower_90, upper_90 = evaluate_model(strain, model_path)
+                plot_reconstructed({det: strain_data}, {det: mean_reconstruction}, {det: lower_90}, {det: upper_90}, {det: signal_data}, {det: psd_data}, before, after, args.test_index, args.add_zoom_plot, det)
+
+            #TODO: Add plotting code for reconstruction without uncertainty or modify existing code.
+
 if __name__ == "__main__":
     main()
