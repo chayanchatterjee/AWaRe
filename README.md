@@ -48,5 +48,5 @@ The generated plots will then be saved in the directory ```evaluation/Plots```.
 ## Citation
 
 If you use this code please give credit by citing the following papers:
-1. "Reconstruction of binary black hole harmonics in LIGO using deep learning", [Chatterjee and Jani 2024](https://arxiv.org/abs/2403.01559).
-2. "Navigating Unknowns: Deep Learning Robustness for Gravitational Wave Signal Reconstruction", [Chatterjee and Jani 2024](https://arxiv.org/abs/2406.06324).
+1. "Reconstruction of binary black hole harmonics in LIGO using deep learning", [Chatterjee and Jani 2024](https://iopscience.iop.org/article/10.3847/1538-4357/ad4602).
+2. "Navigating Unknowns: Deep Learning Robustness for Gravitational Wave Signal Reconstruction", [Chatterjee and Jani 2024](https://iopscience.iop.org/article/10.3847/1538-4357/ad6984).
