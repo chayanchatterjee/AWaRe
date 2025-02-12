@@ -4,6 +4,7 @@ import pandas as pd
 import h5py
 import sys
 import logging
+import os
 import numpy as np
 
 log_level = logging.INFO
@@ -31,28 +32,28 @@ class DataLoader:
             with h5py.File(path, 'r') as file:
                 print(f"Successfully loaded file: {path}")
 
-            # Check if both 'injection_samples' and 'noise_samples' exist in the file
-            if 'injection_samples' in file.keys() and 'noise_samples' in file.keys():
+                # Check if both 'injection_samples' and 'noise_samples' exist in the file
+                if 'injection_samples' in list(file.keys()) and 'noise_samples' in list(file.keys()):
                 
-                # Load strain data from both injection and noise samples
-                injection_strain_data = file['injection_samples'][self.det_code + '_strain'][()]
-                noise_strain_data = file['noise_samples'][self.det_code + '_strain'][()]
+                    # Load strain data from both injection and noise samples
+                    injection_strain_data = file['injection_samples'][self.det_code + '_strain'][()]
+                    noise_strain_data = file['noise_samples'][self.det_code + '_strain'][()]
     
-                # Attempt to load signal data from injection parameters
-                try:
-                    signal_data = file['injection_parameters'][self.det_code + '_signal_whitened'][()]
-                    noise_signal_data = file['noise_parameters'][self.det_code + '_signal_whitened'][()]
-                except KeyError:
-                    raise ValueError(f"Whitened pure waveform not found for {self.det_code}.")
+                    # Attempt to load signal data from injection parameters
+                    try:
+                        signal_data = file['injection_parameters'][self.det_code + '_signal_whitened'][()]
+                        noise_signal_data = file['noise_parameters'][self.det_code + '_signal_whitened'][()]
+                    except KeyError:
+                        raise ValueError(f"Whitened pure waveform not found for {self.det_code}.")
         
-            else:
-                missing_keys = []
-                if 'injection_samples' not in file.keys():
-                    missing_keys.append("'injection_samples'")
-                if 'noise_samples' not in file.keys():
-                    missing_keys.append("'noise_samples'")
+                else:
+                    missing_keys = []
+                    if 'injection_samples' not in file.keys():
+                        missing_keys.append("'injection_samples'")
+                    if 'noise_samples' not in file.keys():
+                        missing_keys.append("'noise_samples'")
     
-                raise ValueError(f"Missing keys in the file: {', '.join(missing_keys)}.")
+                    raise ValueError(f"Missing keys in the file: {', '.join(missing_keys)}.")
                 
 
         else:
@@ -69,7 +70,7 @@ class DataLoader:
         shuffled_array_signal = concatenated_array[shuffled_indices]
 
         # Concatenate the arrays
-        concatenated_array_strain = np.concatenate((strain, noise_strain))
+        concatenated_array_strain = np.concatenate((injection_strain_data, noise_strain_data))
 
         shuffled_array_strain = concatenated_array_strain[shuffled_indices]
     
@@ -135,7 +136,7 @@ class DataLoader:
         return np.array(X), np.array(y)
     
     
-    def reshape_sequences(self, num, data_noisy, data_pure):
+    def reshape_sequences(self, num, data_noisy, data_pure, timesteps):
         """
         Reshapes data into overlapping sequences for model training.
 
@@ -154,14 +155,13 @@ class DataLoader:
                 arr_pure (np.ndarray): The reshaped pure target sequences.
         """
         logging.info('Splitting the waveforms into overlapping subsequences...')
-        n_steps = self.timesteps
         arr_noisy, arr_pure = [], []
 
         for i in range(num):
             X_noisy, X_pure = data_noisy[i], data_pure[i]
-            X_noisy = np.pad(X_noisy, (n_steps, n_steps), 'constant', constant_values=(0, 0))
-            X_pure = np.pad(X_pure, (n_steps, n_steps), 'constant', constant_values=(0, 0))
-            X, y = self.split_sequence(X_noisy, X_pure, n_steps)
+            X_noisy = np.pad(X_noisy, (timesteps, timesteps), 'constant', constant_values=(0, 0))
+            X_pure = np.pad(X_pure, (timesteps, timesteps), 'constant', constant_values=(0, 0))
+            X, y = self.split_sequence(X_noisy, X_pure, timesteps)
             arr_noisy.append(X)
             arr_pure.append(y)
 

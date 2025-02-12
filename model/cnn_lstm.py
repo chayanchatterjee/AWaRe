@@ -103,16 +103,16 @@ class CNN_LSTM(BaseModel):
         self.early_stop_patience = self.config.model.early_stop_patience
         self.timesteps = self.config.model.timesteps
 
-        self.cnn_filters_1 = self.config.model.layers.CNN_layer_1
-        self.cnn_filters_2 = self.config.model.layers.CNN_layer_2
-        self.lstm_1 = self.config.model.layers.LSTM_layer_1
-        self.lstm_2 = self.config.model.layers.LSTM_layer_2
-        self.lstm_3 = self.config.model.layers.LSTM_layer_3
-        self.kernel_size = self.config.model.layers.kernel_size
-        self.pool_size = self.config.model.layers.pool_size
-        self.dropout = self.config.model.layers.Dropout
-        self.num_heads = self.config.model.layers.num_heads_MHA
-        self.key_dim = self.config.model.layers.key_dim_MHA
+        self.cnn_filters_1 = self.config.model.CNN_layer_1
+        self.cnn_filters_2 = self.config.model.CNN_layer_2
+        self.lstm_1 = self.config.model.LSTM_layer_1
+        self.lstm_2 = self.config.model.LSTM_layer_2
+        self.lstm_3 = self.config.model.LSTM_layer_3
+        self.kernel_size = self.config.model.kernel_size
+        self.pool_size = self.config.model.pool_size
+        self.dropout = self.config.model.Dropout
+        self.num_heads = self.config.model.num_heads_MHA
+        self.key_dim = self.config.model.key_dim_MHA
 
     @staticmethod
     def negloglik(y, rv_y):

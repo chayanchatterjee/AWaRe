@@ -42,7 +42,8 @@ plt.switch_backend('agg')
 tfd = tfp.distributions
 
 def train(Network, X_train_noisy, X_train_pure, output_dir, batch_size, learning_rate, epochs, val_split, 
-          reduce_lr_factor, reduce_lr_patience, early_stop_patience, train_from_checkpoint):
+          reduce_lr_factor, reduce_lr_patience, early_stop_patience, model_checkpoint, train_from_checkpoint):
+    
     """Trains the model"""
     checkpoint_dir = "checkpoints/Saved_checkpoint"
     checkpoint_directory = "{}/tmp_{}".format(checkpoint_dir, str(hex(random.getrandbits(32))))
@@ -63,20 +64,24 @@ def train(Network, X_train_noisy, X_train_pure, output_dir, batch_size, learning
         validation_split=val_split, callbacks=callbacks_list
     )
 
-    checkpoint.save(file_prefix=checkpoint_prefix)
-    Network.save(checkpoint_directory)
+    model_checkpoint.save(file_prefix=checkpoint_prefix)
+    output_path = os.path.join(output_dir, 'Saved_model.h5')
+    Network.save(output_path)
     
     return model_history
 
 def plot_loss_curves(loss, val_loss, output_dir):
     """Plots loss curves"""
+    
+    output_path = os.path.join(output_dir, 'Loss_curve.png')
+    
     plt.figure(figsize=(6, 4))
     plt.plot(loss, "r--", label="Loss on training data")
     plt.plot(val_loss, "r", label="Loss on validation data")
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
     plt.legend()
-    plt.savefig(output_dir, dpi=200)
+    plt.savefig(output_path, dpi=200)
 
 
 def main():
@@ -85,22 +90,18 @@ def main():
     parser.add_argument('-d', '--dataset-file', type=str, help="Path to the file where the datasets are stored.")
     parser.add_argument('-det', '--detector', type=str, help="Detector for which the data is to be fetched (H1/L1/V1).")
     parser.add_argument('-o', '--output-dir', type=str, help="Path to the directory where the outputs will be stored. The directory must exist.")
-    parser.add_argument('--val-split', type=int, help="Fraction of training dataset to be used for validation.")
+    parser.add_argument('--val-split', type=int, default=0.2, help="Fraction of training dataset to be used for validation.")
     parser.add_argument('--model-path', type=str, default=None, help="Path where trained model will be saved.")
     parser.add_argument('--checkpoint-path', type=str, default=None, help="Checkpoint path for resuming training from a certain epoch.")
     
     args = parser.parse_args()
 
     ### Set up logging
-    if args.debug:
-        log_level = logging.DEBUG
-    elif args.verbose:
-        log_level = logging.INFO
-    else:
-        log_level = logging.WARN
+    log_level = logging.INFO
         
     logging.basicConfig(format='%(levelname)s | %(asctime)s: %(message)s', level=log_level, datefmt='%d-%m-%Y %H:%M:%S')
 
+    cnn_lstm = CNN_LSTM(CFG)
     TrainDS = DataLoader(args.detector)
     
     strain_train, signal_train = TrainDS.load_data(args.dataset_file)
@@ -109,7 +110,7 @@ def main():
     logging.info('Scaling the amplitudes of the pure signals by 100...')
     signal_train = signal_train / 100.0
 
-    X_train_noisy, X_train_pure = TrainDS.reshape_sequences(strain_train.shape[0], strain_train, signal_train)
+    X_train_noisy, X_train_pure = TrainDS.reshape_sequences(strain_train.shape[0], strain_train, signal_train, cnn_lstm.timesteps)
 
     X_train_noisy = X_train_noisy[..., None]
     X_train_pure = X_train_pure[..., None]
@@ -117,18 +118,17 @@ def main():
     X_train_noisy = X_train_noisy.astype("float32")
     X_train_pure = X_train_pure.astype("float32")
        
-    cnn_lstm = CNN_LSTM(CFG)
-    Network, checkpoint = cnn_lstm.build(X_train_noisy.shape[1:], args.model_path)
+    Network, model_checkpoint = cnn_lstm.build(X_train_noisy.shape[1:], args.model_path)
 
     model_history = train(Network=Network, X_train_noisy=X_train_noisy, X_train_pure=X_train_pure, output_dir=args.output_dir,
-                    batch_size=cnn_lstm.batch_size, epochs=cnn_lstm.epochs, val_split=args.val_split,
+                    batch_size=cnn_lstm.batch_size, learning_rate=cnn_lstm.lr, epochs=cnn_lstm.epochs, val_split=args.val_split,
                     reduce_lr_factor=cnn_lstm.reduce_lr_factor, reduce_lr_patience=cnn_lstm.reduce_lr_patience,
-                    early_stop_patience=cnn_lstm.early_stop_patience, train_from_checkpoint=args.checkpoint_path)  
+                    early_stop_patience=cnn_lstm.early_stop_patience, model_checkpoint=model_checkpoint, train_from_checkpoint=args.checkpoint_path)  
     
     plot_loss_curves(model_history.history['loss'], model_history.history['val_loss'], args.output_dir)  
     
 
-    if __name__=='__main__':
-        main()
+if __name__=='__main__':
+    main()
 
 

@@ -7,7 +7,7 @@
 CFG = {
 
     "train": {
-        "batch_size": 512,
+        "batch_size": 32,
         "epochs": 2,
         "optimizer": {
             "type": "adam"
